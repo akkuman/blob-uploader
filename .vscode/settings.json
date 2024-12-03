@@ -1,0 +1,6 @@
+{
+    "go.testFlags": [
+        "-v",
+    ],
+    "go.testEnvFile": "${workspaceFolder}/.env",
+}
