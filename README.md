@@ -20,3 +20,12 @@ Flags:
   -f, --tgz-file string   file path for tgz which will be uploaded
   -u, --username string   the username of registry
 ```
+
+it also supports config from environment, for example, the above command line arguments can be replaced with the following environment variables.
+
+```shell
+export BUL_USERNAME=akkuman
+export BUL_PASSWORD=<ghp_token>
+export BUL_REF_NAME=ghcr.io/example/hello:1.2.0
+export BUL_TGZ_FILE=/tmp/example.tgz
+```
