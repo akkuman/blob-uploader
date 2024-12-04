@@ -14,11 +14,13 @@ Usage:
   blob-uploader upload [flags]
 
 Flags:
-  -h, --help              help for upload
-  -p, --password string   the password of registry
-  -r, --ref-name string   the ref that you will push, exmaple: ghcr.io/example/hello:1.2.0
-  -f, --tgz-file string   file path for tgz which will be uploaded
-  -u, --username string   the username of registry
+  -h, --help                  help for upload
+      --image-source string   value of org.opencontainers.image.source, if blank, default to current repo url
+  -p, --password string       the password of registry
+      --platform string       Specify platform (e.g. linux/amd64) (default "linux/amd64")
+  -r, --ref-name string       the ref that you will push (e.g. ghcr.io/example/hello:1.2.0)
+  -f, --tgz-file string       file path for tgz which will be uploaded
+  -u, --username string       the username of registry
 ```
 
 it also supports config from environment, for example, the above command line arguments can be replaced with the following environment variables.
