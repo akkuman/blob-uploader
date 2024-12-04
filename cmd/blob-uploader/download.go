@@ -66,7 +66,12 @@ ref: https://github.com/orgs/Homebrew/discussions/4335
 			return err
 		}
 		defer w.Close()
-		return rg.DownloadBlob(ctx, refName, fileDigest, w)
+		err = rg.DownloadBlob(ctx, refName, fileDigest, w)
+		if err != nil {
+			return err
+		}
+		fmt.Println("Successfully download tgz from registry!")
+		return nil
 	},
 }
 

@@ -56,6 +56,7 @@ ref: https://github.com/Homebrew/brew/blob/b753315b0b1e78b361612bf4985502bf9dca5
 		if err != nil {
 			return err
 		}
+		fmt.Println("Successfully upload tgz to registry!")
 		return nil
 	},
 }
@@ -66,5 +67,5 @@ func init() {
 	uploadCmd.Flags().StringVarP(&uploadCommandOpt.tgzFilePath, "tgz-file", "f", "", "file path for tgz which will be uploaded")
 	uploadCmd.Flags().StringVarP(&uploadCommandOpt.refName, "ref-name", "r", "", "the ref that you will push, exmaple: ghcr.io/example/hello:1.2.0")
 	uploadCmd.Flags().StringVarP(&uploadCommandOpt.username, "username", "u", "", "the username of registry")
-	uploadCmd.Flags().StringVarP(&uploadCommandOpt.password, "passowrd", "p", "", "the passowrd of registry")
+	uploadCmd.Flags().StringVarP(&uploadCommandOpt.password, "password", "p", "", "the password of registry")
 }

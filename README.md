@@ -15,7 +15,7 @@ Usage:
 
 Flags:
   -h, --help              help for upload
-  -p, --passowrd string   the passowrd of registry
+  -p, --password string   the password of registry
   -r, --ref-name string   the ref that you will push, exmaple: ghcr.io/example/hello:1.2.0
   -f, --tgz-file string   file path for tgz which will be uploaded
   -u, --username string   the username of registry
