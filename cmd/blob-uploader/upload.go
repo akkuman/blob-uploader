@@ -33,6 +33,7 @@ var uploadCmd = &cobra.Command{
 
 ref: https://github.com/Homebrew/brew/blob/b753315b0b1e78b361612bf4985502bf9dca5582/Library/Homebrew/github_packages.rb#L196-L428`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		uploadCommandOpt.refName = strings.ToLower(uploadCommandOpt.refName)
 		if !strings.HasPrefix(uploadCommandOpt.refName, "ghcr.io") {
 			return fmt.Errorf("ref-name must start with ghcr.io")
 		}

@@ -32,6 +32,7 @@ var downloadCmd = &cobra.Command{
 ref: https://github.com/orgs/Homebrew/discussions/4335
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		downloadCommandOpt.refName = strings.ToLower(downloadCommandOpt.refName)
 		if !strings.HasPrefix(downloadCommandOpt.refName, "ghcr.io") {
 			return fmt.Errorf("ref-name must start with ghcr.io")
 		}

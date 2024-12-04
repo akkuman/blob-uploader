@@ -112,6 +112,13 @@ func TestParseRefName(t *testing.T) {
 	}
 }
 
+func TestParseRefNameContainsUppercaseLetter(t *testing.T) {
+	_, err := ref.New("ghcr.io/Akkuman/wget")
+	if err == nil || !strings.Contains(err.Error(), "repo must be lowercase") {
+		t.Error("err must contains 'repo must be lowercase'")
+	}
+}
+
 func TestDownloadBlob(t *testing.T) {
 	rg := NewAnonymousRegistry()
 	out, err := os.CreateTemp("", "DownloadBlob.test.*")
