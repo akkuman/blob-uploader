@@ -44,7 +44,8 @@ func TestGithubPackageStorage(t *testing.T) {
 		return
 	}
 	defer f.Close()
-	err = s.Upload(context.Background(), "akkuman/wget:0.0.1", util.DefaultPlatform, f)
+	imageSource := "https://github.com/akkuman/blob-uploader"
+	err = s.Upload(context.Background(), "akkuman/wget2:0.0.1", util.DefaultPlatform, imageSource, f)
 	if err != nil {
 		t.Error("upload to github packages failed:", err)
 		return

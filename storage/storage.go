@@ -13,6 +13,6 @@ type Metadata struct {
 }
 
 type Storage interface {
-	Upload(ctx context.Context, imageRef string, platform util.Platform, reader io.Reader) error
+	Upload(ctx context.Context, imageRef string, platform util.Platform, imageSource string, reader io.Reader) error
 	Download(ctx context.Context, imageRef string, platform util.Platform, writer io.Writer) error
 }

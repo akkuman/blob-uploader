@@ -64,4 +64,13 @@ func init() {
 	downloadCmd.Flags().StringVarP(&downloadCommandOpt.outFile, "out-file", "o", "", "file path for tgz")
 	downloadCmd.Flags().StringVarP(&downloadCommandOpt.refName, "ref-name", "r", "", "the ref that you want download from (e.g.: ghcr.io/example/hello:1.2.0)")
 	downloadCmd.Flags().StringVarP(&downloadCommandOpt.platform, "platform", "", "linux/amd64", "Specify platform (e.g. linux/amd64)")
+
+	requires := []string{
+		"out-file",
+		"ref-name",
+	}
+
+	for _, i := range requires {
+		downloadCmd.MarkFlagRequired(i)
+	}
 }

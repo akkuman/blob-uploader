@@ -22,6 +22,7 @@ type UploadCommandOpt struct {
 	username string
 	password string
 	platform string
+	imageSource string
 }
 
 var uploadCommandOpt UploadCommandOpt
@@ -57,7 +58,7 @@ ref: https://github.com/Homebrew/brew/blob/b753315b0b1e78b361612bf4985502bf9dca5
 			return err
 		}
 		defer f.Close()
-		err = stge.Upload(context.Background(), uploadCommandOpt.refName, *platform, f)
+		err = stge.Upload(context.Background(), uploadCommandOpt.refName, *platform, uploadCommandOpt.imageSource, f)
 		if err != nil {
 			return err
 		}
@@ -74,4 +75,27 @@ func init() {
 	uploadCmd.Flags().StringVarP(&uploadCommandOpt.username, "username", "u", "", "the username of registry")
 	uploadCmd.Flags().StringVarP(&uploadCommandOpt.password, "password", "p", "", "the password of registry")
 	uploadCmd.Flags().StringVarP(&uploadCommandOpt.platform, "platform", "", "linux/amd64", "Specify platform (e.g. linux/amd64)")
+	uploadCmd.Flags().StringVarP(&uploadCommandOpt.platform, "image-source", "", "", "value of org.opencontainers.image.source, if blank, default to current repo url")
+
+	requires := []string{
+		"tgz-file",
+		"ref-name",
+		"username",
+		"password",
+	}
+
+	for _, i := range requires {
+		uploadCmd.MarkFlagRequired(i)
+	}
+
+	// default set to current repo url
+	// https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#default-environment-variables
+	//   GITHUB_REPOSITORY: The owner and repository name. For example, octocat/Hello-World.
+	// TODO: mabe use https://github.com/sethvargo/go-githubactions
+	if uploadCommandOpt.platform == "" {
+		v, ok := os.LookupEnv("GITHUB_REPOSITORY")
+		if ok {
+			uploadCommandOpt.platform = fmt.Sprintf("https://github.com/%s", v)
+		}
+	}
 }

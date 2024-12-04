@@ -110,7 +110,7 @@ func (s *OCI) writeIndexJSON(ctx context.Context, indexJSONSHA256 string, indexJ
 	return err
 }
 
-func (s *OCI) BuildOCI(ctx context.Context, platform util.Platform, targzFilePath string, tagVersion string) (err error) {
+func (s *OCI) BuildOCI(ctx context.Context, platform util.Platform, targzFilePath string, tagVersion string, imageSource string) (err error) {
 	err = s.writeImageLayout(ctx)
 	if err != nil {
 		return
@@ -141,6 +141,7 @@ func (s *OCI) BuildOCI(ctx context.Context, platform util.Platform, targzFilePat
 	}
 	annotations := map[string]any{
 		"com.github.package.type": "pkgforge_package",
+		"org.opencontainers.image.source": imageSource,
 		"dev.pkgforge.bin.digest": targzSHA256,
 	}
 	imageManifest := map[string]any{

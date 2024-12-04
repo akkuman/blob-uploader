@@ -27,7 +27,7 @@ func NewGithubPackageStorage(ociInstance *oci.OCI, registry *regctl.Registry) *G
 	}
 }
 
-func (s *GithubPackageStorage) Upload(ctx context.Context, imageRef string, platform util.Platform, reader io.Reader) error {
+func (s *GithubPackageStorage) Upload(ctx context.Context, imageRef string, platform util.Platform, imageSource string, reader io.Reader) error {
 	r, err := ref.New(imageRef)
 	if err != nil {
 		return err
@@ -38,7 +38,7 @@ func (s *GithubPackageStorage) Upload(ctx context.Context, imageRef string, plat
 		return fmt.Errorf("write blob to file failed: %w", err)
 	}
 	defer os.Remove(blobFilePath)
-	err = s.ociInstance.BuildOCI(ctx, platform, blobFilePath, s.registry.GetVersion(imageRef))
+	err = s.ociInstance.BuildOCI(ctx, platform, blobFilePath, s.registry.GetVersion(imageRef), imageSource)
 	if err != nil {
 		return fmt.Errorf("build oci failed: %w", err)
 	}
