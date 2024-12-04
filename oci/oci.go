@@ -175,7 +175,6 @@ func (s *OCI) BuildOCI(ctx context.Context, platform util.Platform, targzFilePat
 		return err
 	}
 	err = s.writeIndexJSON(ctx, indexJSONSHA256, indexJSONSize, map[string]any{
-		"io.containerd.image.name":"ghcr.io/akkuman/wget:0.0.1",
 		"org.opencontainers.image.ref.name": "latest",
 	})
 	return err
