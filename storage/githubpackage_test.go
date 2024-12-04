@@ -8,6 +8,7 @@ import (
 	"github.com/akkuman/blob-uploader/oci"
 	"github.com/akkuman/blob-uploader/pkg/compress"
 	"github.com/akkuman/blob-uploader/pkg/regctl"
+	"github.com/akkuman/blob-uploader/pkg/util"
 	_ "github.com/akkuman/blob-uploader/testinit"
 )
 
@@ -42,7 +43,7 @@ func TestGithubPackageStorage(t *testing.T) {
 		return
 	}
 	defer f.Close()
-	err = s.Upload(context.Background(), "akkuman/wget:0.0.1", f)
+	err = s.Upload(context.Background(), "akkuman/wget:0.0.1", util.DefaultPlatform, f)
 	if err != nil {
 		t.Error("upload to github packages failed:", err)
 		return

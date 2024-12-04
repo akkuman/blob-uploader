@@ -110,7 +110,7 @@ func (s *OCI) writeIndexJSON(ctx context.Context, indexJSONSHA256 string, indexJ
 	return err
 }
 
-func (s *OCI) BuildOCI(ctx context.Context, targzFilePath string, tagVersion string) (err error) {
+func (s *OCI) BuildOCI(ctx context.Context, platform util.Platform, targzFilePath string, tagVersion string) (err error) {
 	err = s.writeImageLayout(ctx)
 	if err != nil {
 		return
@@ -121,8 +121,8 @@ func (s *OCI) BuildOCI(ctx context.Context, targzFilePath string, tagVersion str
 		return
 	}
 	platformMap := map[string]any{
-		"architecture": "amd64",
-		"os":           "linux",
+		"architecture": platform.Arch,
+		"os":           platform.OS,
 	}
 	var tarSHA256 string
 	tarSHA256, err = util.GetTarSHA256FromGz(targzFilePath)

@@ -21,6 +21,7 @@ type UploadCommandOpt struct {
 	refName string
 	username string
 	password string
+	platform string
 }
 
 var uploadCommandOpt UploadCommandOpt
@@ -40,6 +41,10 @@ ref: https://github.com/Homebrew/brew/blob/b753315b0b1e78b361612bf4985502bf9dca5
 		if uploadCommandOpt.tgzFilePath == ""|| !util.FileExist(uploadCommandOpt.tgzFilePath) {
 			return fmt.Errorf("%s is not exist", uploadCommandOpt.tgzFilePath)
 		}
+		platform := util.ParsePlatform(uploadCommandOpt.platform)
+		if platform == nil {
+			return fmt.Errorf("%s is not allowed", uploadCommandOpt.platform)
+		}
 		reg := regctl.NewRegistry("ghcr.io", uploadCommandOpt.username, uploadCommandOpt.password)
 		err := reg.Login()
 		if err != nil {
@@ -52,7 +57,7 @@ ref: https://github.com/Homebrew/brew/blob/b753315b0b1e78b361612bf4985502bf9dca5
 			return err
 		}
 		defer f.Close()
-		err = stge.Upload(context.Background(), uploadCommandOpt.refName, f)
+		err = stge.Upload(context.Background(), uploadCommandOpt.refName, *platform, f)
 		if err != nil {
 			return err
 		}
@@ -65,7 +70,8 @@ func init() {
 	rootCmd.AddCommand(uploadCmd)
 
 	uploadCmd.Flags().StringVarP(&uploadCommandOpt.tgzFilePath, "tgz-file", "f", "", "file path for tgz which will be uploaded")
-	uploadCmd.Flags().StringVarP(&uploadCommandOpt.refName, "ref-name", "r", "", "the ref that you will push, exmaple: ghcr.io/example/hello:1.2.0")
+	uploadCmd.Flags().StringVarP(&uploadCommandOpt.refName, "ref-name", "r", "", "the ref that you will push (e.g. ghcr.io/example/hello:1.2.0)")
 	uploadCmd.Flags().StringVarP(&uploadCommandOpt.username, "username", "u", "", "the username of registry")
 	uploadCmd.Flags().StringVarP(&uploadCommandOpt.password, "password", "p", "", "the password of registry")
+	uploadCmd.Flags().StringVarP(&uploadCommandOpt.platform, "platform", "", "linux/amd64", "Specify platform (e.g. linux/amd64)")
 }

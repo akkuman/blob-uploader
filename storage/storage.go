@@ -3,6 +3,8 @@ package storage
 import (
 	"context"
 	"io"
+
+	"github.com/akkuman/blob-uploader/pkg/util"
 )
 
 type Metadata struct {
@@ -11,6 +13,6 @@ type Metadata struct {
 }
 
 type Storage interface {
-	Upload(ctx context.Context, uri string, reader io.Reader) error
-	Download(ctx context.Context, uri string, writer io.Writer) error
+	Upload(ctx context.Context, imageRef string, platform util.Platform, reader io.Reader) error
+	Download(ctx context.Context, imageRef string, platform util.Platform, writer io.Writer) error
 }

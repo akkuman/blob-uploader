@@ -10,6 +10,7 @@ import (
 	"github.com/akkuman/blob-uploader/pkg/regctl"
 	"github.com/akkuman/blob-uploader/pkg/util"
 	"github.com/regclient/regclient/types/ref"
+	"github.com/tidwall/gjson"
 )
 
 type GithubPackageStorage struct {
@@ -26,7 +27,7 @@ func NewGithubPackageStorage(ociInstance *oci.OCI, registry *regctl.Registry) *G
 	}
 }
 
-func (s *GithubPackageStorage) Upload(ctx context.Context, imageRef string, reader io.Reader) error {
+func (s *GithubPackageStorage) Upload(ctx context.Context, imageRef string, platform util.Platform, reader io.Reader) error {
 	r, err := ref.New(imageRef)
 	if err != nil {
 		return err
@@ -37,7 +38,7 @@ func (s *GithubPackageStorage) Upload(ctx context.Context, imageRef string, read
 		return fmt.Errorf("write blob to file failed: %w", err)
 	}
 	defer os.Remove(blobFilePath)
-	err = s.ociInstance.BuildOCI(ctx, blobFilePath, s.registry.GetVersion(imageRef))
+	err = s.ociInstance.BuildOCI(ctx, platform, blobFilePath, s.registry.GetVersion(imageRef))
 	if err != nil {
 		return fmt.Errorf("build oci failed: %w", err)
 	}
@@ -49,6 +50,30 @@ func (s *GithubPackageStorage) Upload(ctx context.Context, imageRef string, read
 	return nil
 }
 
-func (s *GithubPackageStorage) Download(ctx context.Context, uri string, writer io.Writer) error {
-	return nil
+func (s *GithubPackageStorage) Download(ctx context.Context, imageRef string, platform util.Platform, writer io.Writer) error {
+	r, err := ref.New(imageRef)
+	if err != nil {
+		return err
+	}
+	rg := regctl.NewAnonymousRegistry()
+	if r.Tag == "latest" {
+		tags, err := rg.GetTags(ctx, imageRef)
+		if err != nil {
+			return err
+		}
+		r.Tag = tags[len(tags)-1]
+	}
+	refName := fmt.Sprintf("%s/%s:%s", r.Registry, r.Repository, r.Tag)
+	manifest, err := rg.GetManifest(ctx, refName)
+	if err != nil {
+		return err
+	}
+	var fileDigest string
+	for _, mf := range gjson.Get(manifest, "manifests").Array() {
+		if mf.Get("platform.architecture").String() == platform.Arch && mf.Get("platform.os").String() == platform.OS {
+			fileDigest = mf.Get(`annotations.dev\.pkgforge\.bin\.digest`).String()
+			break
+		}
+	}
+	return rg.DownloadBlob(ctx, refName, fileDigest, writer)
 }

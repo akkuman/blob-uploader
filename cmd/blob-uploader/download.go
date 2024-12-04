@@ -7,18 +7,18 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"runtime"
 	"strings"
 
-	"github.com/akkuman/blob-uploader/pkg/regctl"
+	"github.com/akkuman/blob-uploader/pkg/util"
+	"github.com/akkuman/blob-uploader/storage"
 	"github.com/regclient/regclient/types/ref"
 	"github.com/spf13/cobra"
-	"github.com/tidwall/gjson"
 )
 
 type DownloadCommandOpt struct {
 	outFile string
 	refName string
+	platform string
 }
 
 var downloadCommandOpt DownloadCommandOpt
@@ -36,37 +36,20 @@ ref: https://github.com/orgs/Homebrew/discussions/4335
 		if !strings.HasPrefix(downloadCommandOpt.refName, "ghcr.io") {
 			return fmt.Errorf("ref-name must start with ghcr.io")
 		}
-		r, err := ref.New(downloadCommandOpt.refName)
-		if err != nil {
+		if _, err := ref.New(downloadCommandOpt.refName); err != nil {
 			return err
 		}
-		ctx := context.Background()
-		rg := regctl.NewAnonymousRegistry()
-		if r.Tag == "latest" {
-			tags, err := rg.GetTags(ctx, downloadCommandOpt.refName)
-			if err != nil {
-				return err
-			}
-			r.Tag = tags[len(tags)-1]
+		platform := util.ParsePlatform(downloadCommandOpt.platform)
+		if platform == nil {
+			return fmt.Errorf("%s is not allowed", uploadCommandOpt.platform)
 		}
-		refName := fmt.Sprintf("%s/%s:%s", r.Registry, r.Repository, r.Tag)
-		manifest, err := rg.GetManifest(ctx, refName)
-		if err != nil {
-			return err
-		}
-		var fileDigest string
-		for _, mf := range gjson.Get(manifest, "manifests").Array() {
-			if mf.Get("platform.architecture").String() == runtime.GOARCH && mf.Get("platform.os").String() == runtime.GOOS {
-				fileDigest = mf.Get(`annotations.dev\.pkgforge\.bin\.digest`).String()
-				break
-			}
-		}
+		stge := storage.NewGithubPackageStorage(nil, nil)
 		w, err := os.Create(downloadCommandOpt.outFile)
 		if err != nil {
 			return err
 		}
 		defer w.Close()
-		err = rg.DownloadBlob(ctx, refName, fileDigest, w)
+		err = stge.Download(context.Background(), downloadCommandOpt.refName, *platform, w)
 		if err != nil {
 			return err
 		}
@@ -79,5 +62,6 @@ func init() {
 	rootCmd.AddCommand(downloadCmd)
 
 	downloadCmd.Flags().StringVarP(&downloadCommandOpt.outFile, "out-file", "o", "", "file path for tgz")
-	downloadCmd.Flags().StringVarP(&downloadCommandOpt.refName, "ref-name", "r", "", "the ref that you want download from, example: ghcr.io/example/hello:1.2.0")
+	downloadCmd.Flags().StringVarP(&downloadCommandOpt.refName, "ref-name", "r", "", "the ref that you want download from (e.g.: ghcr.io/example/hello:1.2.0)")
+	downloadCmd.Flags().StringVarP(&downloadCommandOpt.platform, "platform", "", "linux/amd64", "Specify platform (e.g. linux/amd64)")
 }
