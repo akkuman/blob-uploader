@@ -26,7 +26,7 @@ var downloadCommandOpt DownloadCommandOpt
 // downloadCmd represents the download command
 var downloadCmd = &cobra.Command{
 	Use:   "download",
-	Short: "download file from github packages",
+	Short: "Download file from github packages",
 	Long: `download file bolb from github packages,
 	
 ref: https://github.com/orgs/Homebrew/discussions/4335

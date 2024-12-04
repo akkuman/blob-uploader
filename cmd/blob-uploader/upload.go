@@ -28,7 +28,7 @@ var uploadCommandOpt UploadCommandOpt
 // uploadCmd represents the upload command
 var uploadCmd = &cobra.Command{
 	Use:   "upload",
-	Short: "upload file to github packages",
+	Short: "Upload file to github packages",
 	Long: `upload file bolb to github packages
 
 ref: https://github.com/Homebrew/brew/blob/b753315b0b1e78b361612bf4985502bf9dca5582/Library/Homebrew/github_packages.rb#L196-L428`,
