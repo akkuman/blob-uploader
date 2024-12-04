@@ -30,6 +30,7 @@ func TestGithubPackageStorage(t *testing.T) {
 		return
 	}
 	ociInstance := oci.NewOCI()
+	defer ociInstance.Close()
 	s := NewGithubPackageStorage(ociInstance, reg)
 	targzPath, err := compress.CompressToTmpFile([]string{"./_testdata/wget"})
 	if err != nil {

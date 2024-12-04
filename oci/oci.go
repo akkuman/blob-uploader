@@ -140,6 +140,7 @@ func (s *OCI) BuildOCI(ctx context.Context, platform util.Platform, targzFilePat
 		return
 	}
 	annotations := map[string]any{
+		"com.github.package.type": "pkgforge_package",
 		"dev.pkgforge.bin.digest": targzSHA256,
 	}
 	imageManifest := map[string]any{
@@ -174,6 +175,7 @@ func (s *OCI) BuildOCI(ctx context.Context, platform util.Platform, targzFilePat
 		return err
 	}
 	err = s.writeIndexJSON(ctx, indexJSONSHA256, indexJSONSize, map[string]any{
+		"io.containerd.image.name":"ghcr.io/akkuman/wget:0.0.1",
 		"org.opencontainers.image.ref.name": "latest",
 	})
 	return err
