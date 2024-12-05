@@ -4,7 +4,7 @@ It all started one day when I was looking for how homebrew saves their bottles, 
 
 Then I wondered if I could use it as a package storage on [Azathothas/Toolpacks](https://github.com/Azathothas/Toolpacks/)
 
-So @Azathothas asked if I could write a tool to do this.
+So [@Azathothas](https://github.com/Azathothas) asked if I could write a tool to do this.
 
 That's how this tool was born.
 
