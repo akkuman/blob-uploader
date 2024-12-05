@@ -1,3 +1,13 @@
+## Why was this tool created?
+
+It all started one day when I was looking for how homebrew saves their bottles, according to the official documentation I found out that they save them in github packages, then I continued my research and found out that they package their software in tar.gz and upload it as OCI artifacts to github packages.
+
+Then I wondered if I could use it as a package storage on [Azathothas/Toolpacks](https://github.com/Azathothas/Toolpacks/)
+
+So @Azathothas asked if I could write a tool to do this.
+
+That's how this tool was born.
+
 ## Usage
 
 ```shell
