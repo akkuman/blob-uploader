@@ -39,9 +39,10 @@ ref: https://github.com/orgs/Homebrew/discussions/4335
 		if _, err := ref.New(downloadCommandOpt.refName); err != nil {
 			return err
 		}
+		
 		platform := util.ParsePlatform(downloadCommandOpt.platform)
 		if platform == nil {
-			return fmt.Errorf("%s is not allowed", uploadCommandOpt.platform)
+			return fmt.Errorf("%s is not allowed", downloadCommandOpt.platform)
 		}
 		stge := storage.NewGithubPackageStorage(nil, nil)
 		w, err := os.Create(downloadCommandOpt.outFile)
