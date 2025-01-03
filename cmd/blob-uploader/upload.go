@@ -75,7 +75,7 @@ func init() {
 	uploadCmd.Flags().StringVarP(&uploadCommandOpt.username, "username", "u", "", "the username of registry")
 	uploadCmd.Flags().StringVarP(&uploadCommandOpt.password, "password", "p", "", "the password of registry")
 	uploadCmd.Flags().StringVarP(&uploadCommandOpt.platform, "platform", "", "linux/amd64", "Specify platform (e.g. linux/amd64)")
-	uploadCmd.Flags().StringVarP(&uploadCommandOpt.platform, "image-source", "", "", "value of org.opencontainers.image.source, if blank, default to current repo url")
+	uploadCmd.Flags().StringVarP(&uploadCommandOpt.imageSource, "image-source", "", "", "value of org.opencontainers.image.source, if blank, default to current repo url")
 
 	requires := []string{
 		"tgz-file",
@@ -92,10 +92,10 @@ func init() {
 	// https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#default-environment-variables
 	//   GITHUB_REPOSITORY: The owner and repository name. For example, octocat/Hello-World.
 	// TODO: mabe use https://github.com/sethvargo/go-githubactions
-	if uploadCommandOpt.platform == "" {
+	if uploadCommandOpt.imageSource == "" {
 		v, ok := os.LookupEnv("GITHUB_REPOSITORY")
 		if ok {
-			uploadCommandOpt.platform = fmt.Sprintf("https://github.com/%s", v)
+			uploadCommandOpt.imageSource = fmt.Sprintf("https://github.com/%s", v)
 		}
 	}
 }
